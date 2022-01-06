@@ -1,0 +1,37 @@
+# 1. Mesure du temps pris par les principales etapes de l'algorithme
+
+On prend les mesures avec le programme fourier_compression_mesure.cpp
+Et avec le taux de compression 10%
+
+|                                         | tiny_lena_gray.png | small_lena_gray.png |
+| :-------------------------------------: | :----------------: | :-----------------: |
+| Encodage de l'image par DFT             | 0.453558    s      | 107.915      s      |
+| Selection des p% plus gros coefficients | 0.000392115 s      |   0.00693269 s      |
+| Reconstitution de l'image compressee    | 0.0622232   s      |  15.4575     s      |
+
+# 2. Parallélisation avec OpenMP
+
+On parallélise avec OpenMP les fonctions directTransformFourier et inversePartialDiscretTransformFourier,
+les plus coûteuses.
+La parallélisation se fait sur les pixels.
+
+On prend les mesures avec le programme fourier_compression_omp.cpp
+Et avec le taux de compression 10%
+
+|                                         | tiny_lena_gray.png | small_lena_gray.png |
+| :-------------------------------------: | :----------------: | :-----------------: |
+| Encodage de l'image par DFT             | 0.100759    s      |  25.388      s      |
+| Selection des p% plus gros coefficients | 0.000508865 s      |   0.00884671 s      |
+| Reconstitution de l'image compressee    | 0.0171114   s      |   3.59185    s      |
+| :-------------------------------------: | :----------------: | :-----------------: |
+| Accélération obtenue :                  | 77.1 %             | 76.5 %              |
+
+L'accélération obtenue pour les deux images est intéressante !
+Au lieu d'exécuter les boucles for en séquentiel, plusieurs threads s'en occupent simultanément.
+En traitement d'image, il y aura souvent des opérations indépendantes à faire sur chaque pixel :
+les algorithmes seront donc hautement parallélisables.
+
+# 3. Première parallélisation avec MPI
+
+Non terminé.
+
